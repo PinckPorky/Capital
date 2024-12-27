@@ -9,6 +9,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Capital.Enams;
+using Capital.Entiti;
 
 namespace Capital
 {
@@ -19,7 +20,7 @@ namespace Capital
     {
         public MainWindow()
         {
-            InitializeComponent();  // что это?
+            InitializeComponent();  // что это? посмотреть веб за 19 число
 
             Init();
         }
@@ -43,7 +44,7 @@ namespace Capital
         #region Methods==================================
         private void Init()
         {
-            
+            _comboBox.ItemsSource = _strategies;
             _comboBox.SelectionChanged += _comboBox_SelectionChange;
             _comboBox.SelectedIndex = 0; 
 
@@ -70,17 +71,17 @@ namespace Capital
        
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            List<Data>datas=Calculate();
+            List<Data>datas = Calculate();
             Draw(datas);
         }
-        private void Calculate()
+        private List<Data> Calculate()
         {
             decimal depoStart = GetDecimalFromString(_depo.Text);
-            decimal startLot = GetDecimalFromString(_startLot.Text);
+            int startLot = GetIntFromString(_startLot.Text);
             decimal take = GetDecimalFromString(_take.Text);
             decimal stop = GetDecimalFromString(_stop.Text);
             decimal comiss = GetDecimalFromString(_commis.Text);
-            decimal coutTrades = GetDecimalFromString(_countTrades.Text);
+            int coutTrades = GetIntFromString(_countTrades.Text);
             decimal percProfit = GetDecimalFromString(_persentProfit.Text);
             decimal minStartPrecent = GetDecimalFromString(_minStartPercent.Text);
             decimal go = GetDecimalFromString(_go.Text);
@@ -94,8 +95,8 @@ namespace Capital
                 datas.Add(new Data(depoStart, type));
             }
 
-            int lotDown = startLot;
-            decimal precent = startLot * go * 100 / depoStart;
+            int lotPercent = startLot;
+            decimal percent = startLot * go * 100 / depoStart;
 
             decimal multiply = startLot / stop;
             int lotProgress = CalculateLot(depoStart, minStartPrecent, go);
@@ -115,14 +116,17 @@ namespace Capital
 
                     // stratedy 2=========================================
 
-                    datas[1].ResultDepo += (take - comiss) * startLot;
+                    datas[1].ResultDepo += (take - comiss) * lotPercent;
+
                     int newLot = CalculateLot(datas[1].ResultDepo, percent, go);
+
                     if (lotPercent < newLot) lotPercent = newLot;
 
+                    // просмотреть код
                     // stratedy 3=========================================
 
                     datas[3].ResultDepo += (take - comiss) * lotProgress;
-                    lotDown = startLot;
+                    lotDown = CalculateLot(depoStart,minStartPrecent * multiply, go);
                 }
                 else
                 {
@@ -147,9 +151,11 @@ namespace Capital
         }
         private void Draw(List<Data>datas)
         {
+            _canvas.Children.Clear();
             int index = _comboBox.SelectedIndex;
 
-            List<decimal> listEquity = datas[index].GetLisstEquity();
+            List<decimal> listEquity = datas[index].GetListEquity();
+
             int cout = listEquity.Count;
             decimal maxEquity = listEquity.Max();
             decimal minEquity = listEquity.Min();
@@ -162,9 +168,21 @@ namespace Capital
 
             for (int i = 0; i < cout; i++)
             {
+                y = _canvas.ActualHeight - (double)(listEquity[i] - minEquity) / kof;
+
+                Ellipse ellipse = new Ellipse()
+                {
+                    Width = 2,
+                    Height = 2,
+                    Stroke = Brushes.Green
+                };
+
+                Canvas.SetLeft(ellipse, x);
+                Canvas.SetTop(ellipse, y);
+
+                _canvas.Children.Add(ellipse);
                 
-                
-                x+= stepX;
+                x += stepX;
             }
         }
 
@@ -172,7 +190,7 @@ namespace Capital
         {
             if (precent > 100) { precent = 100; }
             decimal lot = curretDepo / go / 100 * precent;
-            return (int)lot;  // поясните синтаксис
+            return (int)lot;  
         }
 
         private decimal GetDecimalFromString(string str)
@@ -182,7 +200,7 @@ namespace Capital
             return 0;
         }
 
-        private int GetDecimalFromString(string str)
+        private int GetIntFromString(string str)
         {
             if (int.TryParse(str, out int result)) return result;
 

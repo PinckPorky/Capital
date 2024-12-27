@@ -7,12 +7,12 @@ using Capital.Enams;
 
 namespace Capital.Entiti
 {
-    public class Date
+    public class Data
     {
 
         public Data(decimal depoStart, StrategyType strategyType)
         {
-            strategyType = strategyType;
+            StrategyType = strategyType;
 
             Depo = depoStart;
         }
@@ -27,6 +27,7 @@ namespace Capital.Entiti
             set
             {
                 _depo = value;
+                ResultDepo = value;
             }
         }
 

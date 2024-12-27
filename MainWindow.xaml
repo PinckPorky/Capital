@@ -58,41 +58,32 @@
                    Grid.Column="1"/>
         <TextBlock x:Name="_startLot"
                    Grid.Column="1" Grid.Row="1"/>
-           
         <TextBlock x:Name="_take"
                    Grid.Column="1" Grid.Row="2"/>
-            
         <TextBlock x:Name="_stop"
                    Grid.Column="1" Grid.Row="3"/>
-             
         <TextBlock x:Name="_commis"
                    Grid.Column="1" Grid.Row="4"/>
-             
         <TextBlock x:Name="_persentProfit"
                    Grid.Column="1" Grid.Row="5"/>
-             
         <TextBlock x:Name="_countTrades"
                    Grid.Column="1" Grid.Row="6"/>
-            
         <TextBlock x:Name="_minStartPercent"
                    Grid.Column="1" Grid.Row="7"/>
-             
         <TextBlock x:Name="_go"
                    Grid.Column="1" Grid.Row="9"/>
-            
         <Button Content="Расчитать"
                 Click="Button_Click"
                 Grid.Column="1" Grid.Row="11"/>
 
-                
 
         <GroupBox Header="Таблица результатов"
                   Grid.Column="2" Grid.RowSpan="12" 
                   Margin="10,1">
             <DataGrid x:Name="_dataGrid"
                       Margin="5"/>
-
-        </GroupBox>
+        </GroupBox> 
+        
         <Canvas x:Name="_canvas"
                 Grid.Row="13"
                 Grid.Column="3"
