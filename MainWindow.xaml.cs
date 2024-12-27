@@ -11,6 +11,8 @@ using System.Windows.Shapes;
 using Capital.Enams;
 using Capital.Entiti;
 
+
+
 namespace Capital
 {
     /// <summary>
@@ -157,6 +159,7 @@ namespace Capital
             List<decimal> listEquity = datas[index].GetListEquity();
 
             int cout = listEquity.Count;
+            if (cout == 0) return;
             decimal maxEquity = listEquity.Max();
             decimal minEquity = listEquity.Min();
 
@@ -166,6 +169,12 @@ namespace Capital
             double x = 0;
             double y = 0;
 
+            Polyline polyline = new Polyline // делаю линию
+            {
+                Stroke = Brushes.Green,
+                StrokeThickness = 1,
+            };
+
             for (int i = 0; i < cout; i++)
             {
                 y = _canvas.ActualHeight - (double)(listEquity[i] - minEquity) / kof;
@@ -174,18 +183,22 @@ namespace Capital
                 {
                     Width = 2,
                     Height = 2,
-                    Stroke = Brushes.Green
+                    Fill = Brushes.Green
                 };
 
                 Canvas.SetLeft(ellipse, x);
                 Canvas.SetTop(ellipse, y);
 
                 _canvas.Children.Add(ellipse);
+                polyline.Points.Add(new Point(x,y));
                 
                 x += stepX;
+                
             }
+            _canvas.Children.Add(polyline);
         }
 
+        
         private int CalculateLot(decimal curretDepo, decimal precent, decimal go)
         {
             if (precent > 100) { precent = 100; }
